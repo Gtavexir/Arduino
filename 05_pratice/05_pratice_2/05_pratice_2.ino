@@ -9,7 +9,6 @@ void setup() {
 }
 
 void loop() {
-
   toggle = toggle_state(toggle);
   digitalWrite(LED, toggle);
   delay(100);
