@@ -7,6 +7,7 @@ int p, delay_t;
 void setup() {
   pinMode(LED, OUTPUT);
   digitalWrite(LED, HIGH);
+//  delay(2000); // 촬영용
 //  set_period(100);
 //  set_period(1000);
 //  set_period(10000);
@@ -17,7 +18,7 @@ void loop() {
   plus ? d++ : d--;
   if(d==0) plus=!plus;
   if(d==100) plus=!plus;
-  delayMicroseconds(5000);
+  delayMicroseconds(delay_t);
 }
 
 void set_period(int period) { //periodL 100 to 10000 (unit: us)
