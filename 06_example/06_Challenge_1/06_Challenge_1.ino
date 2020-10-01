@@ -7,10 +7,10 @@ int p, delay_t;
 void setup() {
   pinMode(LED, OUTPUT);
   digitalWrite(LED, HIGH);
-//  delay(2000); // 촬영용
+  delay(2000); // 촬영용
 //  set_period(100);
 //  set_period(1000);
-//  set_period(10000);
+  set_period(10000);
 }
 
 void loop() {
