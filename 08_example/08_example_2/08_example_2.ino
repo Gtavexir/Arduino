@@ -14,7 +14,7 @@ float timeout; // unit: us
 float dist_min, dist_max, dist_raw; // unit: mm
 unsigned long last_sampling_time; // unit: ms
 float scale; // used for pulse duration to distance conversion
-float last_reading = 100;
+float last_reading = 0;
 
 void setup() {
 // initialize GPIO pins
@@ -57,7 +57,10 @@ void loop() {
     analogWrite(PIN_LED, 255);
   }
   else {
-    analogWrite(PIN_LED, 0);
+    int d = 200-dist_raw;
+    if(d<0) d=-d;
+    int v = (int)(d * 2.54);
+    analogWrite(PIN_LED, v);
   }
   
 // update last sampling time
