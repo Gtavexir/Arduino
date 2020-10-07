@@ -45,7 +45,7 @@ void loop() {
 
 // get a distance reading from the USS
   dist_raw = USS_measure(PIN_TRIG,PIN_ECHO);
-  dist_ema = dist_ema = alpha * dist_raw + (1-alpha) * dist_ema;
+  dist_ema = Median_filter(dist_raw);
 
 // output the read value to the serial port
   Serial.print("Min:0,");
@@ -54,7 +54,7 @@ void loop() {
   Serial.print(",");
   Serial.print("ema:");
   Serial.print(dist_ema);
-//  Serial.print(map(dist_ema,0,400,100,500));
+  Serial.print(map(dist_ema,0,400,100,500));
   Serial.print(",");
   Serial.println("Max:500");
 
@@ -80,4 +80,41 @@ float USS_measure(int TRIG, int ECHO)
   reading = pulseIn(ECHO, HIGH, timeout) * scale; // unit: mm
   if(reading < dist_min || reading > dist_max) reading = 0.0; // return 0 when out of range.
   return reading;
+}
+
+
+int N = 3; //3, 10, 30 유지할 최근 샘플의 개수
+float que[100]={0,}; //최근 N개의 샘플을 유지할 수 있도록 que 구현
+int que_size = 0; //que의 크기
+//중위수 구하는 필터 작성
+float Median_filter(float value) {
+  //샘플이 충분하지 않다면 측정 값 리턴
+  if(que_size < N) {
+    que[que_size] = value;
+    que_size++;
+    return value;
+  }
+  float arr[100]={0,};
+  //중위수를 구하기 위해 정렬될 함수 생성 및 값 저장
+  for(int i=0;i<N;i++) {
+    arr[i] = que[i];
+  }
+  //버블sort 이용해서 정렬
+  for(int i=0;i<N;i++) {
+    for(int j=0;j<N-1;j++) {
+      if(arr[j] > arr[j+1]) {
+        float temp = arr[j];
+        arr[j] = arr[j+1];
+        arr[j+1] = temp;      
+      }
+    }
+  }
+  //최근 샘플 갱신
+  for(int i=0;i<N-1;i++) {
+    que[i] = que[i+1];
+  }
+  que[N-1] = value;
+
+  //중위수 리턴[N/2]
+  return que[(int)N/2];
 }
